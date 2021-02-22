@@ -95,6 +95,22 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 	};
+
+	sound-wm8960 {
+		compatible = "fsl,imx-audio-wm8960";
+		model = "wm8960-audio";
+		audio-cpu = <&sai1>;
+		audio-codec = <&wm8960>;
+		audio-routing =
+			"Headphone Jack", "HP_L",
+			"Headphone Jack", "HP_R",
+			"Ext Spk", "SPK_LP",
+			"Ext Spk", "SPK_LN",
+			"Ext Spk", "SPK_RP",
+			"Ext Spk", "SPK_RN";
+		/* JD2: hp detect high for headphone*/
+		hp-det = <2 0>;
+	};
 };
 
 &dphy {
@@ -210,6 +226,14 @@
 	pinctrl-0 = <&pinctrl_i2c4>;
 	status = "okay";
 
+	wm8960: codec@1a {
+		compatible = "wlf,wm8960";
+		reg = <0x1a>;
+		clocks = <&clk IMX8MQ_CLK_SAI1_ROOT>;
+		clock-names = "mclk";
+		wlf,shared-lrclk;
+	};
+
 	pca9546: i2cmux9546@70 {
 		compatible = "nxp,pca9546";
 		reg = <0x70>;
@@ -305,6 +329,15 @@
 			};
 		};
 	};
+};
+
+&sai1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_sai1>;
+	assigned-clocks = <&clk IMX8MQ_AUDIO_PLL1>, <&clk IMX8MQ_CLK_SAI1>;
+	assigned-clock-parents = <0>, <&clk IMX8MQ_AUDIO_PLL1_OUT>;
+	assigned-clock-rates = <786432000>, <12288000>;
+	status = "okay";
 };
 
 &uart1 { /* console */
@@ -516,6 +549,17 @@
 	pinctrl_reg_usbotg_vbus: reg-usbotg-vbusgrp {
 		fsl,pins = <
 			MX8MQ_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x16
+		>;
+	};
+
+	pinctrl_sai1: sai1grp {
+		fsl,pins = <
+			/* wm8960 */
+			MX8MQ_IOMUXC_SAI1_MCLK_SAI1_MCLK		0xd6
+			MX8MQ_IOMUXC_SAI1_TXFS_SAI1_TX_SYNC		0xd6
+			MX8MQ_IOMUXC_SAI1_TXC_SAI1_TX_BCLK		0xd6
+			MX8MQ_IOMUXC_SAI1_TXD0_SAI1_TX_DATA0		0xd6
+			MX8MQ_IOMUXC_SAI1_RXD0_SAI1_RX_DATA0		0xd6
 		>;
 	};
 
