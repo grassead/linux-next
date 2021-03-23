@@ -37,8 +37,8 @@
 	hdmi-connector {
 		compatible = "hdmi-connector";
 		ddc-i2c-bus = <&ddc_i2c_bus>;
-#if 0
-		hpd-gpios = <&max7323 3 GPIO_ACTIVE_HIGH>;
+#if 1
+		hpd-gpios = <&max7323 2 GPIO_ACTIVE_HIGH>;
 #endif
 		label = "hdmi";
 		type = "a";
